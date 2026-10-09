@@ -1,0 +1,1434 @@
+```css
+/* ═══════════════════════════════════════════════════════════════
+   St. Sebastian Church Madathil — Cinematic Logo Reveal
+   style.css — CINEMATIC POLISH
+   ═══════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  color: #c9a96e;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   MAIN CANVAS
+   ────────────────────────────────────────────────────────────── */
+
+#canvas {
+  display: block;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: #000;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   FINAL LOGO
+   IMPORTANT:
+   The actual lo.png must remain completely untouched.
+   ────────────────────────────────────────────────────────────── */
+
+#final-logo {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #000;
+
+  pointer-events: none;
+  opacity: 0;
+
+  /* JS controls the reveal */
+  transition: opacity 0.8s ease;
+}
+
+#final-logo.visible {
+  opacity: 1;
+}
+
+#final-logo img {
+  display: block;
+
+  /*
+   * Keep the original logo proportions.
+   * Do not stretch or distort.
+   */
+  width: auto;
+  height: auto;
+
+  max-width: 72vw;
+  max-height: 82vh;
+
+  object-fit: contain;
+
+  /*
+   * IMPORTANT:
+   * No glow.
+   * No blur.
+   * No filter.
+   * No artificial effects.
+   */
+  filter: none;
+  transform: none;
+
+  image-rendering: auto;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   CINEMATIC LIGHT / SWEEP LAYER
+   ────────────────────────────────────────────────────────────── */
+
+#sweep-layer {
+  position: fixed;
+  inset: 0;
+
+  z-index: 20;
+
+  pointer-events: none;
+
+  overflow: hidden;
+
+  opacity: 0;
+}
+
+#sweep-layer::after {
+  content: '';
+
+  position: absolute;
+
+  top: -20%;
+  left: -45%;
+
+  width: 32%;
+  height: 140%;
+
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(180, 130, 45, 0.03) 25%,
+    rgba(255, 215, 125, 0.14) 45%,
+    rgba(255, 225, 150, 0.22) 50%,
+    rgba(255, 215, 125, 0.14) 55%,
+    rgba(180, 130, 45, 0.03) 75%,
+    transparent 100%
+  );
+
+  transform: skewX(-12deg);
+
+  animation: none;
+}
+
+#sweep-layer.sweeping {
+  opacity: 1;
+}
+
+#sweep-layer.sweeping::after {
+  animation: goldSweep 1.0s ease-in-out forwards;
+}
+
+@keyframes goldSweep {
+  0% {
+    left: -45%;
+  }
+
+  100% {
+    left: 145%;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   CINEMATIC FLASH
+   JS can add/remove .cinematic-flash
+   ────────────────────────────────────────────────────────────── */
+
+#cinematic-flash {
+  position: fixed;
+  inset: 0;
+
+  z-index: 50;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 240, 190, 0.95) 0%,
+      rgba(255, 210, 100, 0.45) 15%,
+      rgba(255, 170, 50, 0.12) 38%,
+      transparent 70%
+    );
+
+  opacity: 0;
+}
+
+#cinematic-flash.active {
+  animation: cinematicFlash 0.42s ease-out forwards;
+}
+
+@keyframes cinematicFlash {
+  0% {
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0.95;
+  }
+
+  35% {
+    opacity: 0.35;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   GOLDEN PARTICLE ATMOSPHERE
+   ────────────────────────────────────────────────────────────── */
+
+#particle-glow {
+  position: fixed;
+  inset: 0;
+
+  z-index: 4;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(210, 155, 55, 0.08) 0%,
+      rgba(120, 80, 20, 0.035) 28%,
+      transparent 65%
+    );
+
+  opacity: 0.75;
+
+  mix-blend-mode: screen;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   LOADING BAR
+   ────────────────────────────────────────────────────────────── */
+
+#loading-bar-wrap {
+  position: fixed;
+
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  height: 2px;
+
+  z-index: 500;
+
+  pointer-events: none;
+}
+
+#loading-bar {
+  height: 100%;
+  width: 0%;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #7a5520 15%,
+    #c9a96e 50%,
+    #7a5520 85%,
+    transparent
+  );
+
+  transition: width 0.25s ease;
+
+  box-shadow:
+    0 0 8px rgba(201, 169, 110, 0.6);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   START SCREEN
+   ────────────────────────────────────────────────────────────── */
+
+#start-screen {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 48%,
+      #110c05 0%,
+      #070402 55%,
+      #000000 100%
+    );
+
+  transition:
+    opacity 1.3s ease,
+    visibility 1.3s ease;
+}
+
+#start-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   CORNER ACCENTS
+   ────────────────────────────────────────────────────────────── */
+
+.corner {
+  position: absolute;
+
+  width: clamp(28px, 4vw, 50px);
+  height: clamp(28px, 4vw, 50px);
+
+  border-style: solid;
+  border-color: #4a3318;
+
+  opacity: 0.55;
+
+  transition:
+    opacity 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.corner-tl {
+  top: clamp(24px, 4vh, 52px);
+  left: clamp(24px, 3vw, 52px);
+
+  border-width: 1px 0 0 1px;
+}
+
+.corner-tr {
+  top: clamp(24px, 4vh, 52px);
+  right: clamp(24px, 3vw, 52px);
+
+  border-width: 1px 1px 0 0;
+}
+
+.corner-bl {
+  bottom: clamp(24px, 4vh, 52px);
+  left: clamp(24px, 3vw, 52px);
+
+  border-width: 0 0 1px 1px;
+}
+
+.corner-br {
+  bottom: clamp(24px, 4vh, 52px);
+  right: clamp(24px, 3vw, 52px);
+
+  border-width: 0 1px 1px 0;
+}
+
+#start-screen:hover .corner {
+  opacity: 0.8;
+  border-color: #765525;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   START TITLE
+   ────────────────────────────────────────────────────────────── */
+
+.start-title {
+  font-size: clamp(1rem, 2.6vw, 1.9rem);
+
+  letter-spacing: 0.3em;
+
+  text-transform: uppercase;
+
+  color: #b8944e;
+
+  margin-bottom: 0.55em;
+
+  font-weight: normal;
+
+  text-align: center;
+
+  opacity: 0.82;
+
+  padding: 0 2rem;
+
+  text-shadow:
+    0 0 15px rgba(190, 145, 65, 0.15);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   START SUBTITLE
+   ────────────────────────────────────────────────────────────── */
+
+.start-subtitle {
+  font-size: clamp(0.62rem, 1.3vw, 0.92rem);
+
+  letter-spacing: 0.55em;
+
+  text-transform: uppercase;
+
+  color: #6e5228;
+
+  margin-bottom: clamp(2.5rem, 7vh, 5.5rem);
+
+  font-weight: normal;
+
+  text-align: center;
+
+  opacity: 0.6;
+
+  padding: 0 2rem;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   ORNAMENTAL DIVIDER
+   ────────────────────────────────────────────────────────────── */
+
+.start-divider {
+  width: clamp(100px, 18vw, 220px);
+
+  height: 1px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #7a5a28 22%,
+    #c9a96e 50%,
+    #7a5a28 78%,
+    transparent
+  );
+
+  margin-bottom: clamp(2.5rem, 7vh, 5.5rem);
+
+  opacity: 0.65;
+
+  box-shadow:
+    0 0 8px rgba(201, 169, 110, 0.12);
+}
+
+/* ──────────────────────────────────────────────────────────────
+   START BUTTON
+   ────────────────────────────────────────────────────────────── */
+
+#start-btn {
+  position: relative;
+
+  background: transparent;
+
+  border: 1px solid #5a4018;
+
+  color: #c9a96e;
+
+  font-family: 'Georgia', 'Times New Roman', serif;
+
+  font-size: clamp(0.7rem, 1.4vw, 0.95rem);
+
+  letter-spacing: 0.55em;
+
+  text-transform: uppercase;
+
+  padding: 1em 3.2em 1em 3.6em;
+
+  cursor: pointer;
+
+  outline: none;
+
+  overflow: hidden;
+
+  transition:
+    border-color 0.4s ease,
+    color 0.4s ease,
+    box-shadow 0.4s ease,
+    transform 0.15s ease;
+}
+
+#start-btn::before {
+  content: '';
+
+  position: absolute;
+
+  inset: 0;
+
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(201, 169, 110, 0.07) 50%,
+    transparent 100%
+  );
+
+  opacity: 0;
+
+  transition: opacity 0.4s;
+
+  pointer-events: none;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   BUTTON SHIMMER
+   ────────────────────────────────────────────────────────────── */
+
+#start-btn::after {
+  content: '';
+
+  position: absolute;
+
+  top: 0;
+  left: -80%;
+
+  width: 60%;
+  height: 100%;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 220, 130, 0.12),
+    transparent
+  );
+
+  transform: skewX(-20deg);
+
+  transition: left 0.55s ease;
+
+  pointer-events: none;
+}
+
+#start-btn:hover {
+  border-color: #c9a96e;
+
+  color: #e8d5a0;
+
+  box-shadow:
+    0 0 18px rgba(180, 130, 40, 0.18),
+    inset 0 0 12px rgba(180, 130, 40, 0.06);
+}
+
+#start-btn:hover::before {
+  opacity: 1;
+}
+
+#start-btn:hover::after {
+  left: 120%;
+}
+
+#start-btn:active {
+  transform: scale(0.975);
+
+  transition-duration: 0.08s;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   RESPONSIVE FINAL LOGO
+   ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 700px) {
+
+  #final-logo img {
+    max-width: 88vw;
+    max-height: 72vh;
+  }
+
+  .start-title {
+    letter-spacing: 0.18em;
+  }
+
+  .start-subtitle {
+    letter-spacing: 0.3em;
+  }
+
+  #start-btn {
+    letter-spacing: 0.35em;
+    padding-left: 2.8em;
+    padding-right: 2.5em;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   LARGE SCREEN / PRESENTATION DISPLAY
+   ────────────────────────────────────────────────────────────── */
+
+@media (min-width: 1600px) {
+
+  #final-logo img {
+    max-width: 68vw;
+    max-height: 84vh;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   REDUCE MOTION ACCESSIBILITY
+   ────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+
+  #sweep-layer.sweeping::after {
+    animation: none;
+  }
+
+  #final-logo {
+    transition: none;
+  }
+
+  #start-screen {
+    transition: none;
+  }
+}
+/* ===================================
+   CINEMATIC CHURCH INTRO ANIMATION
+=================================== */
+
+/* Smooth entrance for the entire start screen */
+#start-screen {
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Subtle golden background light */
+#start-screen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(166, 119, 36, 0.12) 0%,
+            rgba(70, 42, 12, 0.05) 35%,
+            transparent 70%
+        );
+
+    animation: goldenBackground 5s ease-in-out infinite alternate;
+}
+
+/* Main church title */
+.start-title {
+    opacity: 0;
+    animation: titleReveal 1.8s ease-out 0.4s forwards;
+}
+
+/* Logo presentation subtitle */
+.start-subtitle {
+    opacity: 0;
+    animation: subtitleReveal 1.5s ease-out 1.2s forwards;
+}
+
+/* Golden divider */
+.start-divider {
+    transform: scaleX(0);
+    transform-origin: center;
+    animation: dividerReveal 1.4s ease-out 1.8s forwards;
+}
+
+/* START button */
+#start-btn {
+    opacity: 0;
+    position: relative;
+    overflow: hidden;
+
+    animation:
+        buttonReveal 1.2s ease-out 2.2s forwards,
+        goldenPulse 2.5s ease-in-out 3.4s infinite;
+
+    transition:
+        background 0.4s ease,
+        color 0.4s ease,
+        box-shadow 0.4s ease,
+        transform 0.4s ease;
+}
+
+/* Golden light travelling across the button */
+#start-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 70%;
+    height: 100%;
+
+    background: linear-gradient(
+        110deg,
+        transparent,
+        rgba(255, 224, 145, 0.35),
+        transparent
+    );
+
+    transform: skewX(-25deg);
+    animation: buttonLightSweep 4s ease-in-out 3s infinite;
+    pointer-events: none;
+}
+
+/* Button hover effect */
+#start-btn:hover {
+    background: rgba(166, 119, 36, 0.15);
+    color: #ffe0a0;
+    box-shadow:
+        0 0 15px rgba(196, 151, 65, 0.25),
+        0 0 35px rgba(196, 151, 65, 0.12);
+
+    transform: translateY(-3px);
+}
+
+/* Corner decorations */
+.corner {
+    opacity: 0;
+    animation: cornerReveal 1.5s ease-out 0.2s forwards;
+}
+
+/* Individual corner movements */
+.corner-tl {
+    animation-name: cornerTopLeft;
+}
+
+.corner-tr {
+    animation-name: cornerTopRight;
+}
+
+.corner-bl {
+    animation-name: cornerBottomLeft;
+}
+
+.corner-br {
+    animation-name: cornerBottomRight;
+}
+
+/* ===================================
+   KEYFRAMES
+=================================== */
+
+@keyframes titleReveal {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+        filter: blur(8px);
+        letter-spacing: 0.35em;
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+        letter-spacing: inherit;
+    }
+}
+
+@keyframes subtitleReveal {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+        letter-spacing: 0.7em;
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        letter-spacing: inherit;
+    }
+}
+
+@keyframes dividerReveal {
+    from {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scaleX(1);
+        opacity: 1;
+    }
+}
+
+@keyframes buttonReveal {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes goldenPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 rgba(196, 151, 65, 0);
+    }
+
+    50% {
+        box-shadow: 0 0 18px rgba(196, 151, 65, 0.2);
+    }
+}
+
+@keyframes buttonLightSweep {
+    0%, 65% {
+        left: -120%;
+    }
+
+    100% {
+        left: 160%;
+    }
+}
+
+@keyframes goldenBackground {
+    from {
+        opacity: 0.35;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1.08);
+    }
+}
+
+@keyframes cornerReveal {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes cornerTopLeft {
+    from {
+        opacity: 0;
+        transform: translate(-12px, -12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes cornerTopRight {
+    from {
+        opacity: 0;
+        transform: translate(12px, -12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes cornerBottomLeft {
+    from {
+        opacity: 0;
+        transform: translate(-12px, 12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes cornerBottomRight {
+    from {
+        opacity: 0;
+        transform: translate(12px, 12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+/* Accessibility: respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    #start-screen::before,
+    .start-title,
+    .start-subtitle,
+    .start-divider,
+    #start-btn,
+    #start-btn::before,
+    .corner {
+        animation: none !important;
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+}
+/* ==========================================
+   ST. SEBASTIAN CHURCH MADATHIL
+   CINEMATIC GOLDEN INTRO — PROFESSIONAL EDITION
+========================================== */
+
+#start-screen {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+        radial-gradient(
+            ellipse at 50% 40%,
+            rgba(105, 65, 18, 0.20),
+            transparent 48%
+        ),
+        linear-gradient(
+            180deg,
+            #080603 0%,
+            #100a04 55%,
+            #030201 100%
+        );
+}
+
+/* Cinematic golden atmosphere */
+#start-screen::before {
+    content: "";
+    position: absolute;
+    inset: -30%;
+    z-index: -1;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 15%,
+            rgba(255, 190, 75, 0.22),
+            transparent 25%
+        ),
+        radial-gradient(
+            ellipse at 15% 65%,
+            rgba(176, 113, 28, 0.13),
+            transparent 35%
+        ),
+        radial-gradient(
+            ellipse at 85% 65%,
+            rgba(176, 113, 28, 0.13),
+            transparent 35%
+        );
+
+    animation: cinematicAtmosphere 8s ease-in-out infinite alternate;
+}
+
+/* Moving golden light beam */
+#start-screen::after {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    z-index: -1;
+    pointer-events: none;
+
+    background: linear-gradient(
+        110deg,
+        transparent 40%,
+        rgba(255, 206, 113, 0.025) 46%,
+        rgba(255, 213, 133, 0.12) 49%,
+        rgba(255, 206, 113, 0.025) 52%,
+        transparent 58%
+    );
+
+    animation: goldenLightBeam 10s ease-in-out infinite;
+}
+
+/* Main church title */
+.start-title {
+    position: relative;
+    color: #d5ad60;
+
+    text-shadow:
+        0 0 8px rgba(226, 174, 77, 0.18),
+        0 0 30px rgba(226, 174, 77, 0.08);
+
+    opacity: 0;
+    animation: cinematicTitleReveal 2.2s cubic-bezier(.16, 1, .3, 1)
+        0.3s forwards;
+}
+
+/* Fine golden underline beneath the title */
+.start-title::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 1px;
+    margin: 18px auto 0;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #a77b32,
+        #ffe3a0,
+        #a77b32,
+        transparent
+    );
+
+    box-shadow: 0 0 12px rgba(255, 195, 83, 0.5);
+
+    animation: titleUnderline 1.4s ease-out 1.5s forwards;
+}
+
+/* Subtitle */
+.start-subtitle {
+    color: #a88343;
+    opacity: 0;
+
+    animation: cinematicSubtitleReveal 1.6s ease-out 1.2s forwards;
+}
+
+/* Center divider */
+.start-divider {
+    position: relative;
+    transform: scaleX(0);
+    transform-origin: center;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #8d6325,
+        #ffe0a0,
+        #8d6325,
+        transparent
+    );
+
+    box-shadow: 0 0 12px rgba(232, 178, 75, 0.22);
+
+    animation: dividerExpand 1.6s cubic-bezier(.16, 1, .3, 1)
+        1.7s forwards;
+}
+
+/* START button */
+#start-btn {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+
+    color: #e5c47f;
+    background: rgba(10, 7, 3, 0.7);
+
+    border: 1px solid rgba(185, 137, 52, 0.65);
+
+    box-shadow:
+        inset 0 0 15px rgba(166, 113, 27, 0.035),
+        0 0 0 rgba(240, 186, 82, 0);
+
+    opacity: 0;
+
+    animation:
+        cinematicButtonReveal 1.3s cubic-bezier(.16, 1, .3, 1)
+            2.2s forwards,
+        buttonGlow 3s ease-in-out 3.5s infinite;
+}
+
+/* Light travelling across the button */
+#start-btn::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+
+    top: 0;
+    left: -150%;
+    width: 75%;
+    height: 100%;
+
+    background: linear-gradient(
+        105deg,
+        transparent,
+        rgba(255, 218, 139, 0.20),
+        transparent
+    );
+
+    transform: skewX(-25deg);
+
+    animation: buttonLightTravel 4.5s ease-in-out 3s infinite;
+}
+
+/* Thin luminous border effect */
+#start-btn::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+
+    border: 1px solid rgba(255, 218, 139, 0.45);
+    opacity: 0;
+
+    pointer-events: none;
+
+    animation: borderFlicker 3s ease-in-out 3.5s infinite;
+}
+
+/* Hover: premium golden button */
+#start-btn:hover {
+    color: #fff0c7;
+
+    background: rgba(128, 82, 18, 0.25);
+
+    border-color: #eac477;
+
+    box-shadow:
+        0 0 12px rgba(235, 184, 82, 0.18),
+        0 0 35px rgba(235, 184, 82, 0.12),
+        inset 0 0 18px rgba(235, 184, 82, 0.08);
+
+    transform: translateY(-3px);
+}
+
+/* Corner decorations */
+.corner {
+    border-color: rgba(190, 143, 59, 0.7);
+    opacity: 0;
+
+    animation: cornerFade 1.5s ease-out 0.5s forwards;
+}
+
+.corner-tl {
+    animation-name: cornerTopLeftReveal;
+}
+
+.corner-tr {
+    animation-name: cornerTopRightReveal;
+}
+
+.corner-bl {
+    animation-name: cornerBottomLeftReveal;
+}
+
+.corner-br {
+    animation-name: cornerBottomRightReveal;
+}
+
+/* ==========================================
+   CINEMATIC KEYFRAMES
+========================================== */
+
+@keyframes cinematicAtmosphere {
+    0% {
+        transform: scale(1);
+        opacity: 0.55;
+    }
+
+    100% {
+        transform: scale(1.12);
+        opacity: 1;
+    }
+}
+
+@keyframes goldenLightBeam {
+    0% {
+        transform: translateX(-18%) rotate(-4deg);
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(18%) rotate(-4deg);
+        opacity: 0.3;
+    }
+}
+
+@keyframes cinematicTitleReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(28px) scale(0.97);
+        filter: blur(10px);
+        letter-spacing: 0.35em;
+    }
+
+    60% {
+        opacity: 1;
+        filter: blur(0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+        letter-spacing: inherit;
+    }
+}
+
+@keyframes titleUnderline {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+
+    to {
+        width: min(320px, 70%);
+        opacity: 1;
+    }
+}
+
+@keyframes cinematicSubtitleReveal {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+        letter-spacing: 0.65em;
+        filter: blur(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        letter-spacing: inherit;
+        filter: blur(0);
+    }
+}
+
+@keyframes dividerExpand {
+    from {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scaleX(1);
+        opacity: 1;
+    }
+}
+
+@keyframes cinematicButtonReveal {
+    from {
+        opacity: 0;
+        transform: translateY(22px) scale(0.96);
+        filter: blur(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes buttonGlow {
+    0%, 100% {
+        box-shadow:
+            inset 0 0 15px rgba(166, 113, 27, 0.035),
+            0 0 5px rgba(240, 186, 82, 0.04);
+    }
+
+    50% {
+        box-shadow:
+            inset 0 0 18px rgba(166, 113, 27, 0.08),
+            0 0 22px rgba(240, 186, 82, 0.16);
+    }
+}
+
+@keyframes buttonLightTravel {
+    0%, 65% {
+        left: -150%;
+    }
+
+    100% {
+        left: 170%;
+    }
+}
+
+@keyframes borderFlicker {
+    0%, 100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes cornerFade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes cornerTopLeftReveal {
+    from {
+        opacity: 0;
+        transform: translate(-15px, -15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes cornerTopRightReveal {
+    from {
+        opacity: 0;
+        transform: translate(15px, -15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes cornerBottomLeftReveal {
+    from {
+        opacity: 0;
+        transform: translate(-15px, 15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes cornerBottomRightReveal {
+    from {
+        opacity: 0;
+        transform: translate(15px, 15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+    .start-title {
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.5;
+    }
+
+    .start-subtitle {
+        max-width: 90%;
+    }
+
+    #start-btn {
+        min-height: 48px;
+    }
+}
+
+/* Respect reduced-motion settings */
+@media (prefers-reduced-motion: reduce) {
+    #start-screen::before,
+    #start-screen::after,
+    .start-title,
+    .start-title::after,
+    .start-subtitle,
+    .start-divider,
+    #start-btn,
+    #start-btn::before,
+    #start-btn::after,
+    .corner {
+        animation: none !important;
+        transition: none !important;
+        filter: none !important;
+    }
+
+    .start-title,
+    .start-subtitle,
+    .start-divider,
+    #start-btn,
+    .corner {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ===== PREMIUM CINEMATIC POLISH ===== */
+
+html,
+body {
+    background: #030201;
+}
+
+/* Refined church title */
+.start-title {
+    color: #f0d49a;
+    text-shadow:
+        0 0 12px rgba(220, 174, 85, 0.25),
+        0 0 35px rgba(220, 174, 85, 0.10);
+    line-height: 1.6;
+}
+
+/* Elegant subtitle */
+.start-subtitle {
+    color: #bda06b;
+    text-shadow: 0 0 12px rgba(201, 169, 110, 0.12);
+}
+
+/* Premium gold divider */
+.start-divider {
+    box-shadow:
+        0 0 8px rgba(255, 215, 140, 0.20),
+        0 0 24px rgba(201, 169, 110, 0.10);
+}
+
+/* Refined corner ornaments */
+.corner {
+    border-color: rgba(218, 177, 99, 0.75);
+    filter: drop-shadow(0 0 4px rgba(201, 169, 110, 0.12));
+}
+
+/* More luxurious Start button */
+#start-btn {
+    border-color: rgba(220, 180, 105, 0.8);
+    border-radius: 2px;
+    letter-spacing: 0.38em;
+    backdrop-filter: blur(6px);
+    box-shadow:
+        inset 0 0 20px rgba(201, 169, 110, 0.035),
+        0 0 20px rgba(201, 169, 110, 0.06);
+}
+
+#start-btn:focus-visible {
+    outline: 2px solid #e8d5a0;
+    outline-offset: 6px;
+}
+
+/* Preserve original logo proportions */
+#final-logo img {
+    object-fit: contain;
+    max-width: 88vw;
+    max-height: 84vh;
+}
+
+/* Smoother display on small screens */
+@media (max-width: 600px) {
+    .start-title {
+        font-size: clamp(1rem, 5vw, 1.5rem);
+        letter-spacing: 0.15em;
+    }
+
+    .start-subtitle {
+        font-size: 0.7rem;
+        letter-spacing: 0.22em;
+    }
+
+    #start-btn {
+        padding: 1em 2em;
+        letter-spacing: 0.22em;
+    }
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0,
+                 maximum-scale=1.0, user-scalable=no" />
+  <meta name="description"
+        content="St. Sebastian Church Madathil - Website Presentation" />
+  <title>St. Sebastian Church Madathil</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+
+  <!-- THREE.JS WebGL Canvas -->
+  <canvas id="canvas"></canvas>
+
+  <!-- Golden light-sweep layer (active during settle phase) -->
+  <div id="sweep-layer"></div>
+
+  <!-- FINAL LOGO OVERLAY -->
+  <div id="final-logo">
+    <img
+      src="lo.png"
+      alt="St. Sebastian Church Madathil"
+      draggable="false"
+      oncontextmenu="return false"
+    />
+  </div>
+
+  <!-- LOADING PROGRESS BAR -->
+  <div id="loading-bar-wrap">
+    <div id="loading-bar"></div>
+  </div>
+
+  <!-- START SCREEN -->
+  <div id="start-screen">
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+    <p class="start-title">St. Sebastian Church Madathil</p>
+    <p class="start-subtitle">Website Presentation</p>
+    <div class="start-divider"></div>
+    <button id="start-btn" type="button">&#9654;&ensp;START</button>
+  </div>
+
+  <!-- Main script -->
+  <script src="script.js"></script>
+
+</body>
+</html>
